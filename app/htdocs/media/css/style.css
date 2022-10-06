@@ -1,0 +1,174 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html, 
+body {
+    background-color: #000;
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 40px;
+}
+
+
+/* --> */
+
+body.nojs header,
+body.nojs main,
+body.screen header,
+body.screen footer,
+body.tablet footer {
+    display: none;
+}
+
+
+/* --> */
+
+header {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+}
+
+header svg {
+    cursor: pointer;
+    width: 54px;
+    height: 54px;
+    fill: #fff;
+}
+
+header svg.online {
+    fill: green;
+}
+
+header svg.offline {
+    fill: red;
+}
+
+
+
+
+
+
+
+
+
+p { 
+    margin-bottom: 20px;
+    font-size: 28px;
+}
+
+button {
+    cursor: pointer;
+    box-sizing: border-box;
+    background-color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0 20px;
+    color: #000;
+    font-size: inherit;
+    line-height: 80px;
+    box-shadow: 0px 2px 8px 1px #fff;
+    transition: background-color 0.6s, color 0.6s, box-shadow 0.6s;
+}
+
+button[data-index] {
+    width: 80px;
+}
+
+select { 
+    width: 100%;
+    font-size: 32px;
+}
+
+option {
+    line-height: 42px;
+}
+
+
+
+/* --> */
+
+main {
+    position: fixed;
+    top: 40px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+}
+
+/* --> */
+
+section {
+    overflow: auto;
+    display: none;
+    height: 100%;
+    padding: 20px 20px 20px 20px;
+}
+
+#register {
+    display: block;
+}
+
+
+/* --> */
+
+h2 {
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+#screen .content{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#screen .content div {
+    flex: 0 0 200px;
+    box-sizing: border-box;
+    max-width: 80%;
+    background-color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0 20px;
+    color: #000;
+    font-size: 100px;
+    line-height: 52px;
+    box-shadow: 0px 2px 8px 1px #fff;
+    transition: background-color 0.6s, color 0.6s, box-shadow 0.6s;
+    line-height: 200px;
+    text-align: center;
+}
+
+
+#register .content {
+    margin-bottom: 32px;
+}
+
+#register div.content:nth-of-type(2),
+#citchen div.content {
+    display: flex;
+    gap: 20px 20px;
+    flex-flow: wrap;
+    justify-content: center;
+}
+
+#register .s1 {
+    background-color: #ff9999;
+    color: red;
+    box-shadow: 0px 2px 8px 1px #ff9999;
+}
+
+#register .s2 {
+    background-color: #99ff99;
+    color: green;
+    box-shadow: 0px 2px 8px 1px #99ff99;
+}
+
+#citchen .s2 {
+    display: none;
+}
