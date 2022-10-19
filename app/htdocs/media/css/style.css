@@ -8,7 +8,7 @@ body {
     background-color: #000;
     color: #fff;
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 40px;
+    font-size: 32px;
 }
 
 
@@ -27,15 +27,15 @@ body.tablet footer {
 
 header {
     position: fixed;
-    top: 10px;
-    right: 10px;
+    top: 12px;
+    right: 12px;
     z-index: 2;
 }
 
 header svg {
     cursor: pointer;
-    width: 54px;
-    height: 54px;
+    width: 48px;
+    height: 48px;
     fill: #fff;
 }
 
@@ -43,78 +43,124 @@ header svg.online {
     fill: green;
 }
 
+header svg.auth {
+    fill: blue;
+}
+
 header svg.offline {
     fill: red;
 }
 
 
-
-
-
-
-
-
-
-p { 
-    margin-bottom: 20px;
-    font-size: 28px;
-}
-
-button {
-    cursor: pointer;
-    box-sizing: border-box;
-    background-color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 0 20px;
-    color: #000;
-    font-size: inherit;
-    line-height: 80px;
-    box-shadow: 0px 2px 8px 1px #fff;
-    transition: background-color 0.6s, color 0.6s, box-shadow 0.6s;
-}
-
-button[data-index] {
-    width: 80px;
-}
-
-select { 
-    width: 100%;
-    font-size: 32px;
-}
-
-option {
-    line-height: 42px;
-}
-
-
-
 /* --> */
 
 main {
-    position: fixed;
-    top: 40px;
+    position: relative;
+    top: 0px;
     left: 0;
     right: 0;
     bottom: 0;
     z-index: 1;
+    padding: 72px 12px 12px 12px;
 }
 
 /* --> */
 
 section {
-    overflow: auto;
     display: none;
-    height: 100%;
-    padding: 20px 20px 20px 20px;
 }
 
-#register {
+#screen.show {
+
+}
+
+
+
+/* --> */
+
+#password {
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+#password.show {
+    display: flex;
+    gap: 12px 12px;
+
+}
+
+form {
+    width: calc(100% - 40px);
+    max-width: 380px;
+    margin: 20px;
+    padding: 20px;
+    background-color: #333;
+    border-radius: 12px;
+}
+
+form label {
     display: block;
+    margin-bottom: 12px;
+}
+
+form input {
+    box-sizing: border-box;
+    width: 100%;
+    display: block;
+    margin-bottom: 12px;
 }
 
 
 /* --> */
+
+#tablet.show {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px 20px;
+}
+
+#tablet.show > div {
+    cursor: pointer;
+    flex: 0 0 48px;
+    height: 48px;
+    background-color: rgba(255, 255, 255, 0.6);
+    border: 2px solid #fff;
+    border-radius: 8px;
+    text-align: center;
+    line-height: 48px;
+    transition: all 0.6s;
+}
+
+#tablet.show > div.locked {
+    flex: 0 0 32px;
+    height: 32px;
+    margin: 8px;
+    background-color: rgba(255, 0, 0, 0.6);
+    border-color: red;
+    font-size: 22px;
+    line-height: 32px;
+}
+
+#tablet.show > div.owner {
+    background-color: rgba(0, 255, 0, 0.6);
+    border-color: green;
+}
+
+#tablet.show > div span {
+    display: block;
+}
+
+
+
+
+
+
+
+
+
+/* --> 
 
 h2 {
     margin-bottom: 12px;
@@ -171,4 +217,4 @@ h2 {
 
 #citchen .s2 {
     display: none;
-}
+}*/

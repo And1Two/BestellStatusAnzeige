@@ -13,7 +13,7 @@
     /**
      * 
      */
-    loaded = false,
+    uin = localStorage.getItem("uin"),
 
     /**
      * Device Mode
@@ -21,24 +21,35 @@
     mode = (new Proxy(new URLSearchParams(window.location.search), { get: (p, k) => p.get(k)})).mode || "tablet",
 
     /**
-     * 
-     */
-    currentIndex = -1,
-
-    /**
-     * 
-     */
-    openOrders = 0,
-
-    /**
-     * 
-     */
-    orders = [],
-
-    /**
      *
      */
     max = 40;
+
+    /**
+     * 
+     */
+    class Client {
+
+    }
+
+    /**
+     * 
+     */
+    class Tablet extends Client {
+
+    }
+
+    /**
+     * 
+     */
+    class Screen extends Client {
+        /**
+         * 
+         */
+        constructor(ws) {
+            this.ws = ws;
+        }
+    }
 
     /**
      * 
@@ -55,22 +66,18 @@
          * 
          */
         connect() {
-            this.ws = new WebSocket(document.location.href.replace(/^http/, "ws"));
+            this.ws = new WebSocket(doc.location.href.replace(/^http/, "ws"));
+
+            let c = doc.querySelector("header svg").classList;
 
             this.ws.onopen = (ev) => {
-                this.ws.send(JSON.stringify({ bla: "test" }));
-
-                let c = document.querySelector("header svg").classList;
-
-                c.add("online");
-                c.remove("offline");
+                c.add("auth");
+                c.remove("online", "offline");
             };
 
             this.ws.onclose = (ev) => {
-                let c = document.querySelector("header svg").classList;
-
                 c.add("offline");
-                c.remove("online");
+                c.remove("online", "auth");
 
                 setTimeout(() => this.connect(), 2000);
             };
@@ -85,22 +92,73 @@
 
                     switch(data.type) {
                         case "auth":
-                            this.send({ type: "auth", mode  });
+                            switch(data.auth) {
+                                case "init":
+                                    if(uin) {
+                                        $.show("tablet");
 
-                            currentIndex = data.index;
-                            max = data.count;
+                                        this.send({ type: "auth", uin, mode });
+                                    } else {
+                                        $.show("password");
+                                    }
+                                break;
 
-                            orders = [ ...Array(max).keys() ].map(e => e = 0);
+                                case "uin":
+                                    if(data.uin != uin) {
+                                        uin = data.uin;
 
-                            $.createMatrix();
+                                        localStorage.setItem("uin", uin);
+                                    }
+
+                                    this.send({ type: "auth", uin, mode });
+                                break;
+
+                                case "complete":
+                                    c.add("online");
+                                    c.remove("offline", "auth");
+
+                                    max = data.max;
+        
+                                    $.show("tablet");
+                                    $.createMatrix(data.orders);
+                                break;
+
+                                case "expired":
+                                    $.show("password");
+                                break;
+                            }
                         break;
 
+                        case "error":
+                            console.log(data.error);
+                        break;
+
+                        case "order":
+                            let e = doc.querySelector("[data-index='" + data.index + "']");
+
+                            switch(data.order) {
+                                case "owner":
+                                    e.className = "owner";
+                                break;
+
+                                case "locked":
+                                    e.className = "locked";
+                                break;
+
+                                case "unlock":
+                                case "served":
+                                    e.className = "";
+                                break;
+
+                                case "show":
+                                case "hide":
+                                    if(mode == "screen") {
+
+                                    }
+                                break;
+                            }
+                        break;
                     }
-
-
-
-                    console.log(ev.data);
-
                 } catch(e) {
                     console.log(e);
                 }
@@ -114,6 +172,12 @@
             this.ws.send(JSON.stringify(data));
         }
 
+        /**
+         * 
+         */
+        auth() {
+            this.send({ type: "auth", pwd: doc.querySelector("#pwd").value, mode });
+        }
     }
 
 
@@ -127,7 +191,13 @@
          */
         constructor() {
             this.ready(() => {
-                document.querySelector("body").className = mode
+                doc.querySelector("body").className = mode;
+
+                doc.querySelector("form").onsubmit = (ev) => {
+                    ev.preventDefault();
+
+                    this.ws.auth();
+                }
 
                 this.ws = new WebSocketHandler();
             });
@@ -157,82 +227,44 @@
         /**
          * 
          */
-        settings() {
+        createMatrix(list) {
+            let e = doc.getElementById("tablet");
 
+            e.innerHTML = "";
+
+            for(let i = 0; i < max; i++) {
+                let n = doc.createElement("div"),
+                    t = (list || []).filter(v => v.index == i);
+
+
+                
+                if(t.length) {
+                    n.className = t[0].state == 1 ? "locked" : "owner";
+                }
+
+                n.dataset.index = i;
+                n.innerHTML = "<span>" + (i + 1) + "</span>";
+                n.onclick = () => {
+                    if(n.className == "") {
+                        this.ws.send({ type: "lock", index: i });
+                    } else if(n.className == "owner") {
+                        this.ws.send({ type: "serve", index: i });
+                    }
+                };
+
+                e.appendChild(n);
+            }
         }
 
         /**
          * 
          */
-        createMatrix() {
-
-        }
-
-        /**
-         * 
-         */
-        show(i) {
+        show(c) {
             doc.querySelectorAll("section").forEach(
-                (e, index) => e.style.display = i == index ? "block" : "none"
+                e => e.className = e.id == c ? "show" : ""
             );
         }
 
-        /**
-         * 
-         */
-        addOrder(e) {
-            currentIndex++;
-            openOrders++;
-
-            if(currentIndex >= 40) currentIndex = 0;
-
-            orders[currentIndex] = 1;
-
-            e.querySelector("span").innerHTML = currentIndex + 1;
-
-            this.createQueue();
-        }
-
-        /**
-         * 
-         */
-        closeOrder(i, v) {
-            if(v == 0) {
-                orders[i] = orders[i] == 2 ? 0 : 1;
-
-                doc.querySelector("#screen .content").innerHTML = "<div>" + (i + 1) + "</div>";
-            } else {
-                orders[i] = v;
-            }
-
-            this.createQueue();
-        }
-
-        /**
-         * 
-         */
-        createQueue() {
-            let r = doc.querySelector("#register div.content:nth-of-type(2)");
-
-            r.innerHTML = "";
-
-            orders.forEach((v, i) => {
-                if(v > 0) {
-                    let e = doc.createElement("button");
-
-                    e.dataset.index = i;
-                    e.className = "s" + v;
-                    e.innerText = i + 1;
-                    e.onclick = () => this.closeOrder(i, 0);
-
-                    r.appendChild(e);
-                }
-            });
-
-            doc.querySelector("#citchen .content").innerHTML = r.innerHTML;
-
-            doc.querySelectorAll("#citchen .content button").forEach(e => e.onclick = () => this.closeOrder(Number(e.dataset.index), 2) );
-        }
     };
 
 
