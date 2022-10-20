@@ -71,7 +71,24 @@ section {
 }
 
 #screen.show {
+    display: block;
+}
 
+#screen .content {
+    display: flex;
+    flex-flow: row;
+    gap: 12px 12px;
+}
+
+#screen .content > div {
+    flex: 0 0 48px;
+    height: 48px;
+    background-color: #fff;
+    border-radius: 8px;
+    color: #000;
+    text-align: center;
+    line-height: 48px;
+    transition: all 0.6s;
 }
 
 

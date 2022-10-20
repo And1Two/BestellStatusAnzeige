@@ -116,7 +116,7 @@ class WebSocketHandler {
                                     
                                     client.send({ type: "order", order: "owner", index: data.index });
 
-                                    this.sendAll("tablet", { type: "order", order: "locked", index: data.index }, [ client.uin ]);
+                                    this.sendAll("tablet", { type: "order", order: "locked", index: data.index }, client.uin);
                                 }
                             break;
 
@@ -129,7 +129,7 @@ class WebSocketHandler {
                                     this.orders[data.index].state = 0;
                                     this.orders[data.index].device = "";
 
-                                    this.sendAll("tablet", { type: "order", order: "unlock", index: data.index }, []);
+                                    this.sendAll("tablet", { type: "order", order: "unlock", index: data.index });
                                     this.sendAll("screen", { type: "order", order: "show", index: data.index });
                                 }
                             break;
@@ -143,7 +143,7 @@ class WebSocketHandler {
                                     this.orders[data.index].state = 0;
                                     this.orders[data.index].device = "";
 
-                                    this.sendAll("tablet", { type: "order", order: "unlock", index: data.index }, []);
+                                    this.sendAll("tablet", { type: "order", order: "unlock", index: data.index });
                                     this.sendAll("screen", { type: "order", order: "hide", index: data.index });
                                 }
                             break;
@@ -217,7 +217,7 @@ class WebSocketHandler {
      * 
      */
     sendAll(mode, data, exclude) {
-        this.clients.filter(v => v.mode == mode && !exclude.includes(v.uin)).forEach(d => d.send(data));
+        this.clients.filter(v => v.mode == mode && (!exclude || exclude != v.uin)).forEach(d => d.send(data));
     }
 
     /**

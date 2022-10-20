@@ -51,15 +51,15 @@ class DeviceManager {
     /**
      * 
      */
-    save(uin, force) {
+    async save(uin, force) {
         return new Promise((resolve, reject) => {
             if(uin in this.devices && !force) {
                 return Promise.reject({ mode: "error", error: "exists" });
             }
 
             // loop till write is completed
-            while(this.write) {}
-    
+            //while(this.write) {}
+
             // Switch Mode
             this.write = true;
     
@@ -88,6 +88,8 @@ class DeviceManager {
                     }
                 );
             } catch(e) {
+                this.write = false;
+
                 reject(e);
             }
         });
